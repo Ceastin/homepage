@@ -63,7 +63,7 @@ const executeSearch = (e: React.FormEvent) => {
 
   const destination = searchState.destination.trim().toLowerCase();
 
-  if (destination === 'Birmingham') {
+  if (destination === 'london') {
     window.location.href = 'https://premiereclass-3ktb.vercel.app/';
     return;
   }
@@ -87,7 +87,7 @@ const executeSearch = (e: React.FormEvent) => {
               <span className="block text-[11px] font-bold text-purple-900 tracking-wider uppercase">Destination</span>
               <input
                 type="text"
-                value="Birmingham"
+                value={searchState.destination}
                 onChange={(e) => setSearchState((prev) => ({ ...prev, destination: e.target.value }))}
                 placeholder="Where are you going?"
                 id="input-destination"
