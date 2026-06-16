@@ -67,7 +67,7 @@ export default function App() {
 
       {/* 5. Dynamic search booking engine popup result view overlay dialog */}
       <SearchResultsModal 
-        isOpen={isResultsOpen} 
+        isOpen={false} 
         onClose={() => setIsResultsOpen(false)} 
         searchState={searchState} 
       />
