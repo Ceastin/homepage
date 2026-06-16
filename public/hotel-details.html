@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premier Inn Birmingham City Centre (Exchange Square) hotel</title>
+    <style>
+        /* Core Variables */
+        :root {
+            --pi-purple: #4B0053;
+            --pi-purple-hover: #63006E;
+            --pi-plus-purple: #5A1281;
+            --bg-body: #f4f4f4;
+            --bg-card: #ffffff;
+            --text-main: #222222;
+            --text-muted: #555555;
+            --border-color: #dcdcdc;
+            --border-light: #eeeeee;
+            --ta-green: #00aa6c;
+            --pi-green: #008272;
+            --font-stack: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        /* --- SKELETON LOADING ANIMATION --- */
+        .price-loading { 
+            color: transparent !important; 
+            background: linear-gradient(90deg, #e0e0e0 25%, #f5f5f5 50%, #e0e0e0 75%);
+            background-size: 200% 100%;
+            animation: pulse 1.5s infinite;
+            border-radius: 4px;
+            width: 50px;
+            height: 20px;
+            display: inline-block;
+            user-select: none;
+        }
+        @keyframes pulse { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-stack); background: var(--bg-body); color: var(--text-main); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        /* Header Navigation */
+        header { background-color: var(--bg-card); border-bottom: 1px solid var(--border-color); padding: 0 40px; height: 72px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .header-left, .header-right { display: flex; align-items: center; gap: 32px; }
+        .logo { font-size: 24px; font-weight: 800; color: var(--pi-purple); }
+        .nav-link { font-size: 15px; font-weight: 600; color: var(--text-main); }
+        .nav-link:hover { color: var(--pi-purple); }
+
+        /* Search Ribbon */
+        .search-ribbon { background: var(--pi-purple); color: white; padding: 12px 40px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+        .search-details { display: flex; gap: 24px; align-items: center; font-weight: 600; }
+        .search-details span { display: flex; align-items: center; gap: 8px; }
+        .btn-edit { background: rgba(255,255,255,0.2); border: none; color: white; padding: 6px 16px; border-radius: 4px; font-weight: 600; cursor: pointer; }
+
+        .container { max-width: 1140px; margin: 0 auto; padding: 24px 20px; }
+
+        /* Breadcrumbs & Hotel Header */
+        .breadcrumbs { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+        .breadcrumbs a:hover { text-decoration: underline; color: var(--pi-purple); }
+        .hotel-header { margin-bottom: 24px; }
+        .hotel-title { font-size: 32px; color: var(--pi-purple); font-weight: 800; margin-bottom: 8px; }
+        .hotel-meta { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+        .ta-bubbles { display: flex; gap: 2px; color: var(--ta-green); }
+        .ta-bubbles svg { width: 16px; height: 16px; fill: currentColor; }
+        .badge { background: var(--pi-plus-purple); color: white; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 12px; }
+        .hotel-desc { font-size: 16px; color: var(--text-muted); max-width: 800px; margin-bottom: 24px; }
+
+        /* Facilities */
+        .facilities-list { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 32px; border-bottom: 1px solid var(--border-color); padding-bottom: 24px; }
+        .facility-item { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; background: var(--bg-card); padding: 8px 16px; border-radius: 4px; border: 1px solid var(--border-color); }
+
+        /* Booking Section Layout */
+        .booking-layout { display: grid; grid-template-columns: 1fr 340px; gap: 32px; align-items: start; margin-bottom: 48px; }
+
+        /* Left Column: Room & Rate Selection */
+        .section-title { font-size: 22px; color: var(--pi-purple); margin-bottom: 16px; font-weight: 700; }
+        .rate-warning { background: #fff3cd; color: #856404; padding: 12px 16px; border-radius: 4px; font-size: 14px; margin-bottom: 24px; border-left: 4px solid #ffeeba; }
+
+        .room-card { background: var(--bg-card); border: 2px solid transparent; border-radius: 8px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: border-color 0.3s; }
+        .room-card.selected { border-color: var(--pi-purple); }
+        .room-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+        .room-header h3 { font-size: 20px; font-weight: 700; }
+        .room-header a { color: var(--pi-purple); font-size: 14px; font-weight: 600; text-decoration: underline; }
+        .room-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
+        .alert-text { color: #d32f2f; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 4px; margin-bottom: 16px; }
+
+        /* Rate Rows */
+        .rate-list { border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; margin-top: 16px; }
+        .rate-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border-color); cursor: pointer; background: var(--bg-card); transition: background 0.2s; }
+        .rate-row:last-child { border-bottom: none; }
+        .rate-row:hover { background: var(--bg-body); }
+        .rate-row.selected { background: #fdf5ff; border-left: 4px solid var(--pi-purple); }
+        .rate-info h4 { font-size: 16px; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+        .rate-info p { font-size: 13px; color: var(--text-muted); }
+        .rate-price { font-size: 20px; font-weight: 800; color: var(--text-main); }
+        
+        .radio-btn { width: 20px; height: 20px; border: 2px solid var(--border-color); border-radius: 50%; display: inline-block; position: relative; transition: border-color 0.2s; }
+        .rate-row.selected .radio-btn { border-color: var(--pi-purple); }
+        .rate-row.selected .radio-btn::after { content: ''; width: 10px; height: 10px; background: var(--pi-purple); border-radius: 50%; position: absolute; top: 3px; left: 3px; }
+
+        /* Right Column: Summary Panel */
+        .summary-panel { background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 4px 12px rgba(0,0,0,0.08); position: sticky; top: 90px; }
+        .summary-header { background: #e0e0e0; height: 160px; background-size: cover; background-position: center; border-radius: 8px 8px 0 0; }
+        .summary-content { padding: 24px; }
+        .summary-details { margin-bottom: 24px; border-bottom: 1px solid var(--border-light); padding-bottom: 16px; }
+        .summary-details p { font-size: 14px; margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .summary-details p strong { font-weight: 600; }
+        .summary-total { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; }
+        .summary-total span { font-size: 14px; color: var(--text-muted); }
+        .summary-total strong { font-size: 32px; font-weight: 800; color: var(--text-main); line-height: 1; transition: color 0.3s; }
+        .btn-book { display: block; width: 100%; background: var(--pi-green); color: white; text-align: center; padding: 16px; font-size: 18px; font-weight: 700; border-radius: 4px; border: none; cursor: pointer; transition: 0.2s; }
+        .btn-book:hover { background: #006659; }
+
+        /* Info Section Blocks */
+        .content-block { background: var(--bg-card); padding: 40px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 32px; }
+        .content-block h2 { font-size: 24px; color: var(--pi-purple); margin-bottom: 24px; }
+
+        /* Map & Location Grid */
+        .location-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+        .map-placeholder { background: url('https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=800&q=80') center/cover; height: 400px; border-radius: 8px; }
+        .location-info h4 { font-size: 18px; margin-bottom: 8px; }
+        .location-info p { font-size: 14px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
+        .location-info a { color: var(--pi-purple); font-weight: 600; text-decoration: underline; }
+
+        /* Room Types Gallery */
+        .room-tabs { display: flex; border-bottom: 1px solid var(--border-color); margin-bottom: 24px; }
+        .tab { padding: 12px 32px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; }
+        .tab.active { color: var(--pi-purple); border-bottom: 3px solid var(--pi-purple); }
+        
+        .gallery-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .gallery-card { border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; }
+        .gallery-img { height: 160px; background-size: cover; background-position: center; position: relative; }
+        .gallery-content { padding: 20px; }
+        .gallery-content h4 { font-size: 16px; margin-bottom: 8px; min-height: 40px; }
+        .gallery-content p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; min-height: 80px; }
+        
+        .amenity-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; border-top: 1px solid var(--border-light); padding-top: 16px; }
+        .amenity { display: flex; flex-direction: column; align-items: center; text-align: center; font-size: 11px; color: var(--text-muted); gap: 4px; }
+        .amenity span { font-size: 20px; }
+
+        /* Restaurant Section */
+        .restaurant-flex { display: flex; gap: 32px; align-items: center; }
+        .restaurant-img { flex: 1; height: 300px; border-radius: 8px; background: url('https://images.unsplash.com/photo-1495214783159-3503fd1b572d?auto=format&fit=crop&w=800&q=80') center/cover; }
+        .restaurant-text { flex: 1; }
+        .bb-logo { font-size: 28px; font-weight: 900; color: #222; margin-bottom: 16px; letter-spacing: -1px; }
+
+        /* Reviews Grid */
+        .reviews-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; max-width: 600px; margin-top: 24px; }
+        .review-stat { display: flex; justify-content: space-between; align-items: center; font-size: 15px; font-weight: 600; padding-bottom: 8px; border-bottom: 1px solid var(--border-light); }
+        .review-stat .bubbles { color: var(--ta-green); letter-spacing: 2px; }
+
+        /* Footer */
+        footer { margin-top: 60px; padding-bottom: 40px; background: var(--bg-card); border-top: 1px solid var(--border-color); }
+        .footer-columns { max-width: 1140px; margin: 40px auto; display: grid; grid-template-columns: repeat(5, 1fr); gap: 24px; }
+        .footer-columns h4 { font-size: 15px; margin-bottom: 16px; }
+        .footer-columns ul li { margin-bottom: 12px; }
+        .footer-columns ul li a { font-size: 14px; color: var(--text-muted); }
+        .footer-columns ul li a:hover { color: var(--pi-purple); text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-left">
+            <div class="logo">Premier Inn</div>
+            <a href="#" class="nav-link">Discover Premier Inn</a>
+            <a href="#" class="nav-link">Business</a>
+        </div>
+        <div class="header-right">
+            <a href="#" class="nav-link">Manage booking</a>
+            <a href="#" class="nav-link">Log in</a>
+            <a href="#" class="nav-link">Sign up</a>
+        </div>
+    </header>
+
+    <div class="search-ribbon">
+        <div class="search-details">
+            <span id="header-hotel-name"></span>
+            <span>📅 09 Jun - 10 Jun</span>
+            <span>👥 1 adult, 1 room</span>
+        </div>
+        <button class="btn-edit">Edit search</button>
+    </div>
+
+    <div class="container">
+        <div class="breadcrumbs">
+            <a href="#">Home</a> / 
+            <a href="#">Hotel Directory</a> / 
+            <a href="#">England</a> / 
+            <a href="#">West Midlands</a> / 
+            <a href="#">Birmingham</a> / 
+            <span id="header-hotel-name-1" style="color: var(--text-main); font-weight: 500;"></span>
+        </div>
+
+        <div class="hotel-header">
+            <h1 class="hotel-title" id="header-hotel-name-2"></h1>
+            <div class="hotel-meta">
+                <div class="ta-bubbles">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+                </div>
+                <span style="font-size: 14px; font-weight: 600; color: var(--text-muted); text-decoration: underline;">(370 reviews)</span>
+                <span class="badge">Premier Plus rooms</span>
+            </div>
+            <p class="hotel-desc">Just a 10-minute walk from Bullring & Grand Central, perfect for city breaks in Birmingham.</p>
+            
+            <div class="facilities-list">
+                <div class="facility-item">🅿️ Chargeable offsite parking</div>
+                <div class="facility-item">🪟 Rooms with a view</div>
+                <div class="facility-item">❄️ Air conditioning</div>
+                <div class="facility-item">🍳 Breakfast</div>
+                <div class="facility-item">🍽️ Restaurant</div>
+                <div class="facility-item">📶 Free Wi-Fi</div>
+                <a href="#" style="font-size: 14px; font-weight: 600; color: var(--pi-purple); align-self: center; text-decoration: underline;">See all</a>
+            </div>
+        </div>
+
+        <div class="booking-layout">
+            
+            <div class="booking-options">
+                <h2 class="section-title">Choose your rate</h2>
+                <div class="rate-warning">
+                    We know plans can change, so please make sure you book the rate with the right level of flexibility for you.
+                </div>
+
+                <div class="room-card selected">
+                    <div class="room-header">
+                        <h3 class="room-name-label">Standard room</h3>
+                        <a href="#">See details</a>
+                    </div>
+                    <p class="room-desc">
+                        Our family rooms include a double or king size bed, plus a sofa bed and pull-out bed depending on the number of guests staying in the room. We also provide travel cots at no extra cost. Room size and set up can vary based on the hotel and the number of guests.
+                    </p>
+                    
+                    <div class="rate-list">
+                        <div class="rate-row selected">
+                            <div class="rate-info">
+                                <h4><span class="radio-btn"></span> <span class="rate-type-label">Flex</span></h4>
+                                <p>Pay now or on arrival. Fully refundable up to 1pm on day of arrival</p>
+                            </div>
+                            <div class="rate-price price-loading" id="price-std-flex">£---</div>
+                        </div>
+                        <div class="rate-row">
+                            <div class="rate-info">
+                                <h4><span class="radio-btn"></span> <span class="rate-type-label">Standard</span></h4>
+                                <p>Pay now, non-refundable. Check-in date amendable before 1pm on day of arrival</p>
+                            </div>
+                            <div class="rate-price price-loading" id="price-std-std">£---</div>
+                        </div>
+                        <div class="rate-row">
+                            <div class="rate-info">
+                                <h4><span class="radio-btn"></span> <span class="rate-type-label">Non-Flex</span></h4>
+                                <p>Pay now. No changes</p>
+                            </div>
+                            <div class="rate-price price-loading" id="price-std-nonflex">£---</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="room-card">
+                    <div class="alert-text">
+                        ⚠️ Only 1 room left for your search
+                    </div>
+                    <div class="room-header">
+                        <h3 class="room-name-label">Premier Plus room</h3>
+                        <a href="#">See details</a>
+                    </div>
+                    <p class="room-desc">
+                        As well as more space, a double or king size bed between 480mm and 520mm in height, and wider entry bathrooms with a lowered bath or wet room, our enhanced room design includes Ultimate Wi-Fi, a coffee machine, a mini-fridge, bedside USB ports, an iron, an upgraded workspace and more. At our hotels with 480mm height mattresses, our teams may be able to raise the bed for easier wheelchair access.
+                    </p>
+
+                    <div class="rate-list">
+                        <div class="rate-row">
+                            <div class="rate-info">
+                                <h4><span class="radio-btn"></span> <span class="rate-type-label">Flex</span></h4>
+                                <p>Pay now or on arrival. Fully refundable up to 1pm on day of arrival</p>
+                            </div>
+                            <div class="rate-price price-loading" id="price-prem-flex">£---</div>
+                        </div>
+                        <div class="rate-row">
+                            <div class="rate-info">
+                                <h4><span class="radio-btn"></span> <span class="rate-type-label">Standard</span></h4>
+                                <p>Pay now, non-refundable. Check-in date amendable before 1pm</p>
+                            </div>
+                            <div class="rate-price price-loading" id="price-prem-std">£---</div>
+                        </div>
+                        <div class="rate-row">
+                            <div class="rate-info">
+                                <h4><span class="radio-btn"></span> <span class="rate-type-label">Non-Flex</span></h4>
+                                <p>Pay now. No changes</p>
+                            </div>
+                            <div class="rate-price price-loading" id="price-prem-nonflex">£---</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">* Some rooms have showers only at this hotel</p>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">* For energy efficiency reasons, the bedroom windows do not open. Rooms are fitted with air conditioning.</p>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">* Please note this hotel has no on site parking.</p>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">* All twin rooms at this hotel consist of a double bed and a single sofa bed.</p>
+                <p style="font-size: 13px; color: var(--text-muted);">* Room views may vary by room location and external factors. Specific views are subject to availability at check-in</p>
+            </div>
+
+            <aside class="summary-panel">
+                <div class="summary-header" style="background-image: url('https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=600&q=80');"></div>
+                <div class="summary-content">
+                    <div class="summary-details">
+                        <p><strong>Stay</strong> <span>1 night</span></p>
+                        <p><strong>Room</strong> <span id="summary-room">Standard room</span></p>
+                        <p><strong>Rate</strong> <span id="summary-rate">Flex</span></p>
+                    </div>
+                    <div class="summary-total">
+                        <div>
+                            <span style="display:block; margin-bottom: 4px;">Total price</span>
+                            <a href="#" style="font-size: 13px; color: var(--pi-purple); text-decoration: underline;">See breakdown</a>
+                        </div>
+                        <strong id="summary-price" class="price-loading">£---</strong>
+                    </div>
+                    <div style="margin-bottom: 16px;">
+                        <input type="text" placeholder="Enter promo code" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px;">
+                    </div>
+                    <button class="btn-book">Book now</button>
+                </div>
+            </aside>
+
+        </div>
+
+        <div class="content-block">
+            <h2>Location</h2>
+            <div class="location-grid">
+                <div class="map-placeholder"></div>
+                <div class="location-info">
+                    <h4>6 Exchange Square, The Priory Queensway, Birmingham</h4>
+                    <p style="font-weight: 600; color: var(--text-main);">B4 6FY</p>
+                    <p>Sat Nav Directions: <strong>B4 6FY</strong></p>
+                    
+                    <h4 style="margin-top: 24px;">Directions:</h4>
+                    <p>Start by driving on the A38 in the direction of Birmingham city centre. As you approach the city centre, follow signs for Birmingham City Centre or A38(M), which will take your... <a href="#">Read more</a></p>
+                    
+                    <h4 style="margin-top: 24px;">Transport and local information:</h4>
+                    <p>
+                        Birmingham Moor Street Station – 7 min walk<br>
+                        Birmingham New Street station – 9 min walk<br>
+                        Bullring Shopping Centre – 7 min walk<br>
+                        Birmingham Coach Station (Digbeth) – 15 min <a href="#">Read more</a>
+                    </p>
+
+                    <h4 style="margin-top: 24px;">Parking at Premier Inn</h4>
+                    <p>There is no on-site parking available at this hotel. Chargeable off-site parking is available at Millennium Point multi-storey car park, Howe Street, B4 7AP at £12.70 for 24 hours. Parking is available 24 hours a day but access is restricted to 6am to midnight. The height restriction is 2.1 metres. This car park is operated by Birmingham City Council.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-block">
+            <h2>Our rooms</h2>
+            <div class="room-tabs">
+                <div class="tab active">Double</div>
+                <div class="tab">Twin</div>
+                <div class="tab">Family</div>
+                <div class="tab">Accessible</div>
+            </div>
+            
+            <div class="gallery-grid">
+                <div class="gallery-card">
+                    <div class="gallery-img" style="background-image: url('https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=400&q=80');">
+                        <button style="position: absolute; bottom: 10px; right: 10px; background: white; border: 1px solid #ccc; padding: 4px 12px; font-size: 12px; font-weight: 600; border-radius: 4px;">View gallery</button>
+                    </div>
+                    <div class="gallery-content">
+                        <h4>Standard Double</h4>
+                        <p>A super-comfy bed, blackout curtains, a powerful shower and free Wi-Fi – our double rooms have everything you'll need for a great night's sleep.</p>
+                        <div class="amenity-grid">
+                            <div class="amenity"><span>📶</span> Free Wi-Fi</div>
+                            <div class="amenity"><span>☕</span> Tea & coffee</div>
+                            <div class="amenity"><span>🚿</span> Powerful shower</div>
+                            <div class="amenity"><span>🪑</span> Desk</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="gallery-card">
+                    <div class="gallery-img" style="background-image: url('https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=400&q=80');">
+                        <button style="position: absolute; bottom: 10px; right: 10px; background: white; border: 1px solid #ccc; padding: 4px 12px; font-size: 12px; font-weight: 600; border-radius: 4px;">View gallery</button>
+                    </div>
+                    <div class="gallery-content">
+                        <h4>Standard Double with a view</h4>
+                        <p>A great view, a super-comfy bed, blackout curtains, a powerful shower and free Wi-Fi – our double rooms have everything you'll need.</p>
+                        <div class="amenity-grid">
+                            <div class="amenity"><span>📶</span> Free Wi-Fi</div>
+                            <div class="amenity"><span>☕</span> Tea & coffee</div>
+                            <div class="amenity"><span>🚿</span> Powerful shower</div>
+                            <div class="amenity"><span>🪑</span> Desk</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-card">
+                    <div class="gallery-img" style="background-image: url('https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=400&q=80');">
+                        <button style="position: absolute; bottom: 10px; right: 10px; background: white; border: 1px solid #ccc; padding: 4px 12px; font-size: 12px; font-weight: 600; border-radius: 4px;">View gallery</button>
+                    </div>
+                    <div class="gallery-content">
+                        <h4>Premier Plus Double</h4>
+                        <p>Our enhanced room design includes Ultimate Wi-Fi, a coffee machine, mini-fridge, bedside USB ports, iron, upgraded workspace & more.</p>
+                        <div class="amenity-grid">
+                            <div class="amenity"><span>🚀</span> Ultimate Wi-Fi</div>
+                            <div class="amenity"><span>☕</span> Coffee machine</div>
+                            <div class="amenity"><span>🧊</span> Mini-fridge</div>
+                            <div class="amenity"><span>👔</span> Iron</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-card">
+                    <div class="gallery-img" style="background-image: url('https://images.unsplash.com/photo-1590490359683-658d3d23f972?auto=format&fit=crop&w=400&q=80');">
+                        <button style="position: absolute; bottom: 10px; right: 10px; background: white; border: 1px solid #ccc; padding: 4px 12px; font-size: 12px; font-weight: 600; border-radius: 4px;">View gallery</button>
+                    </div>
+                    <div class="gallery-content">
+                        <h4>Premier Plus Double with a view</h4>
+                        <p>Our enhanced room design with a great view, includes Ultimate Wi-Fi, a coffee machine, mini-fridge, iron, upgraded workspace & more.</p>
+                        <div class="amenity-grid">
+                            <div class="amenity"><span>🚀</span> Ultimate Wi-Fi</div>
+                            <div class="amenity"><span>☕</span> Coffee machine</div>
+                            <div class="amenity"><span>🧊</span> Mini-fridge</div>
+                            <div class="amenity"><span>👔</span> Iron</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 16px; text-align: center;">Disclaimer: Features, layouts, room sizes and designs may vary by hotel and location</p>
+        </div>
+
+        <div class="content-block">
+            <h2>Restaurant</h2>
+            <div class="restaurant-flex">
+                <div class="restaurant-img"></div>
+                <div class="restaurant-text">
+                    <div class="bb-logo">BAR+BLOCK <br><span style="font-size: 14px; font-weight: 600; letter-spacing: 2px;">STEAKHOUSE</span></div>
+                    <p style="font-size: 15px; margin-bottom: 24px; color: var(--text-muted);">Depending on your selected hotel and dates you stay, we will be offering different breakfast and evening options.</p>
+                    
+                    <div style="display: flex; gap: 24px; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+                        <span style="font-weight: 700; border-bottom: 2px solid var(--pi-purple); padding-bottom: 8px; color: var(--pi-purple);">Breakfast</span>
+                        <span style="color: var(--text-muted); font-weight: 600;">Lunch</span>
+                        <span style="color: var(--text-muted); font-weight: 600;">Dinner</span>
+                        <span style="color: var(--text-muted); font-weight: 600;">Meal Deal</span>
+                    </div>
+                    
+                    <p style="font-size: 15px; line-height: 1.6; margin-bottom: 16px;">Mornings have never been so tasty! Build your own breakfast and fill up your plate with freshly cooked favourites like bacon, sausages, eggs and hash browns plus a tasty selection of veggie and vegan options and continental delights like fruit, cereal and freshly... <a href="#" style="color: var(--pi-purple); font-weight: 600;">Read more</a></p>
+                    
+                    <button style="background: white; border: 2px solid var(--pi-purple); color: var(--pi-purple); padding: 10px 24px; font-size: 15px; font-weight: 700; border-radius: 4px; cursor: pointer;">Breakfast Menu</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-block">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <h2>Reviews for Premier Inn Birmingham City Centre (Exchange Square) hotel</h2>
+                    <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">Traveller reviews brought to you by <strong>Tripadvisor</strong></p>
+                    
+                    <div class="reviews-grid">
+                        <div class="review-stat">Location <span class="bubbles">●●●●●</span></div>
+                        <div class="review-stat">Sleep Quality <span class="bubbles">●●●●●</span></div>
+                        <div class="review-stat">Rooms <span class="bubbles">●●●●●</span></div>
+                        <div class="review-stat">Service <span class="bubbles">●●●●●</span></div>
+                        <div class="review-stat">Value <span class="bubbles">●●●●●</span></div>
+                        <div class="review-stat">Cleanliness <span class="bubbles">●●●●●</span></div>
+                    </div>
+                    <button style="background: white; border: 1px solid var(--border-color); padding: 10px 24px; font-weight: 600; border-radius: 4px; margin-top: 24px; cursor: pointer;">Write Review</button>
+                </div>
+            </div>
+
+            <h2 style="margin-top: 48px;">Hotel description</h2>
+            <p style="font-size: 15px; line-height: 1.6; color: var(--text-muted); max-width: 800px;">
+                If you're looking for great-value hotels in Birmingham, come and stay at our Premier Inn Birmingham City Centre (Exchange Square) hotel. Set in the heart of the city just a 10-minute walk away from the Bullring & Grand Central shopping centre, we're in an ideal spot for getting the most out of Birmingham breaks. Whether you're taking the kids to the Thinktank Birmingham Science Museum, catching live events in Birmingham at the Utilita Arena, or driving out to Cadbury World - one of the most popular places to visit in the West Midlands - you'll have plenty of fun things to do on your doorstep. Plus, after days out in Birmingham, you can look forward to relaxing evenings back at our stylish Bar+Block restaurant before enjoying a great night's sleep on one of our super-comfy beds.
+            </p>
+        </div>
+
+        <div class="content-block">
+            <h2>Birmingham City Centre (Exchange Square) FAQs</h2>
+            <div style="border-top: 1px solid var(--border-color); margin-top: 24px;">
+                <div style="padding: 20px 0; border-bottom: 1px solid var(--border-color); font-weight: 600; display: flex; justify-content: space-between; cursor: pointer;">Do you have rooms with a view at this hotel? <span>⌄</span></div>
+                <div style="padding: 20px 0; border-bottom: 1px solid var(--border-color); font-weight: 600; display: flex; justify-content: space-between; cursor: pointer;">Why is booking with Premier Inn the right choice for families? <span>⌄</span></div>
+                <div style="padding: 20px 0; border-bottom: 1px solid var(--border-color); font-weight: 600; display: flex; justify-content: space-between; cursor: pointer;">Why is booking with Premier Inn the right choice for business travellers? <span>⌄</span></div>
+                <div style="padding: 20px 0; border-bottom: 1px solid var(--border-color); font-weight: 600; display: flex; justify-content: space-between; cursor: pointer;">Which popular attractions are close to the Premier Inn Birmingham City Centre (Exchange Square) hotel? <span>⌄</span></div>
+                <div style="padding: 20px 0; border-bottom: 1px solid var(--border-color); font-weight: 600; display: flex; justify-content: space-between; cursor: pointer;">Is the Premier Inn Birmingham City Centre (Exchange Square) hotel located near the city centre? <span>⌄</span></div>
+                <div style="padding: 20px 0; border-bottom: 1px solid var(--border-color); font-weight: 600; display: flex; justify-content: space-between; cursor: pointer;">How far is the Premier Inn Birmingham City Centre (Exchange Square) hotel from the nearest train or tube station? <span>⌄</span></div>
+                <div style="padding: 20px 0; border-bottom: 1px solid var(--border-color); font-weight: 600; display: flex; justify-content: space-between; cursor: pointer;">Which room amenities are available at the Premier Inn Birmingham City Centre (Exchange Square) hotel? <span>⌄</span></div>
+                <div style="padding: 20px 0; border-bottom: 1px solid var(--border-color); font-weight: 600; display: flex; justify-content: space-between; cursor: pointer;">Is the Premier Inn Birmingham City Centre (Exchange Square) hotel accessible? <span>⌄</span></div>
+                <div style="padding: 20px 0; border-bottom: 1px solid var(--border-color); font-weight: 600; display: flex; justify-content: space-between; cursor: pointer;">Does the hotel serve food? <span>⌄</span></div>
+                <div style="padding: 20px 0; border-bottom: 1px solid var(--border-color); font-weight: 600; display: flex; justify-content: space-between; cursor: pointer;">What time is breakfast served at Premier Inn hotels? <span>⌄</span></div>
+                <div style="padding: 20px 0; border-bottom: 1px solid var(--border-color); font-weight: 600; display: flex; justify-content: space-between; cursor: pointer;">Is the hotel bike friendly? <span>⌄</span></div>
+            </div>
+        </div>
+        
+        <div class="content-block" style="background: #e8f0fe; border-color: #aecbfa;">
+            <h3 style="margin-bottom: 12px; font-size: 18px;">Hotel contact information</h3>
+            <p style="font-size: 18px; font-weight: 700; color: var(--pi-purple); margin-bottom: 12px;">Phone: 0300 373 0322</p>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">Calls to our UK hotels cost no more than calls to standard 01 or 02 numbers and are usually included in landline or mobile call packages. The same applies to calls to our hotels in the Republic of Ireland. For hotels outside the UK and Ireland, standard international call charges may apply please check with your provider.</p>
+        </div>
+
+    </div>
+
+    <footer>
+        <div class="footer-columns">
+            <div>
+                <h4>Get in touch</h4>
+                <ul>
+                    <li><a href="#">Contact us</a></li>
+                    <li><a href="#">FAQs</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Terms and conditions</a></li>
+                    <li><a href="#">Terms of use</a></li>
+                    <li><a href="#">Privacy policy</a></li>
+                    <li><a href="#">Cookies notice</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Locations</h4>
+                <ul>
+                    <li><a href="#">Hotel directory</a></li>
+                    <li><a href="#">New hotels</a></li>
+                    <li><a href="#">City breaks</a></li>
+                    <li><a href="#">Summer breaks</a></li>
+                    <li><a href="#">Winter breaks</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Our hotels</h4>
+                <ul>
+                    <li><a href="#">Our rooms</a></li>
+                    <li><a href="#">Family friendly</a></li>
+                    <li><a href="#">Business</a></li>
+                    <li><a href="#">Sleep</a></li>
+                    <li><a href="#">Food & drink</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Find out more</h4>
+                <ul>
+                    <li><a href="#">About us</a></li>
+                    <li><a href="#">News</a></li>
+                    <li><a href="#">Our rates</a></li>
+                    <li><a href="#">Offers</a></li>
+                    <li><a href="#">Local guides</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div style="text-align: center; font-size: 13px; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 24px; max-width: 1140px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: center; gap: 16px;">
+            <a href="#">Group bookings</a>
+            <a href="#">Affiliates</a>
+            <a href="#">International development</a>
+            <a href="#">Careers</a>
+            <span>© 2026 Premier Inn</span>
+            <a href="#">GOSH Charity</a>
+            <a href="#">Force for Good</a>
+            <a href="#">Good Night Guarantee</a>
+            <a href="#">Hotels in Germany</a>
+            <a href="#">hub by Premier Inn</a>
+            <a href="#">ZIP by Premier Inn</a>
+            <a href="#">Disabled access</a>
+            <a href="#">Buy our bed</a>
+            <a href="#">Mobile apps</a>
+            <a href="#">We value difference</a>
+            <a href="#">Sitemap</a>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        var hotelId = urlParams.get('hotelId') || 'default-birmingham';
+        hotelId=hotelId.replaceAll("-"," ");
+        hotelId=hotelId.replaceAll("_","(");
+        hotelId=hotelId.replaceAll("|","-");
+        hotelId=hotelId.replaceAll(",",")");
+        console.log(hotelId);
+        document.getElementById('header-hotel-name').textContent = hotelId;
+        document.getElementById('header-hotel-name-1').textContent = hotelId;
+        document.getElementById('header-hotel-name-2').textContent = hotelId;
+        async function fetchPricingData(id) {
+        console.log(`Fetching pricing from Logik for hotel: ${hotelId}`);
+
+    const url = 'https://impactrongloballtddemo01.demo01.logik.io/api';
+
+    const requestBody = {
+        sessionContext: { stateful: true },
+        partnerData: {
+            product: {
+                configuredProductId: '81a7497a2bdd8b10bb1efba6ce91bf0f'
+            }
+        },
+        fields: [
+            { variableName: 'hotel_name', value: hotelId }
+        ]
+    };
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer GQCJfvwt3eeyc_sdXmbhNtbyR3Mc9kSi0Q'
+        },
+        body: JSON.stringify(requestBody)
+    });
+
+    const text = await response.text();
+    console.log('Status:', response.status);
+    console.log('Response text:', text);
+
+    if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+    }
+
+    return JSON.parse(text);
+}
+
+            function injectPricing(data) {
+            const allPriceField = data?.fields?.find(
+            field => field.variableName === "allPrice"
+            );
+
+    if (!allPriceField || !allPriceField.value) {
+        console.error("allPrice field not found");
+        return;
+    }
+
+    const pricingMap = {};
+
+    allPriceField.value.split(",").forEach(item => {
+        const [room, rate, price] = item.split("|").map(part => part.trim());
+        if (room && rate && price) {
+            pricingMap[`${room}-${rate}`] = price;
+        }
+    });
+
+    const priceElements = {
+        "price-std-flex": `£${pricingMap["Standard-Flex"] || "N/A"}`,
+        "price-std-std": `£${pricingMap["Standard-Standard"] || "N/A"}`,
+        "price-std-nonflex": `£${pricingMap["Standard-Non-Flex"] || "N/A"}`,
+        "price-prem-flex": `£${pricingMap["Premier Plus Room-Flex"] || "N/A"}`,
+        "price-prem-std": `£${pricingMap["Premier Plus Room-Standard"] || "N/A"}`,
+        "price-prem-nonflex": `£${pricingMap["Premier Plus Room-Non-Flex"] || "N/A"}`
+    };
+
+    for (const [id, value] of Object.entries(priceElements)) {
+        const el = document.getElementById(id);
+        if (el) {
+            el.textContent = value;
+            el.classList.remove("price-loading");
+        }
+    }
+
+    updateSummaryPanel();
+}
+
+            // 4. Update the Summary Panel based on user selection
+            function updateSummaryPanel() {
+                const activeRow = document.querySelector('.rate-row.selected');
+                if (!activeRow) return;
+
+                const parentCard = activeRow.closest('.room-card');
+                
+                const roomName = parentCard.querySelector('.room-name-label').textContent.trim();
+                const rateName = activeRow.querySelector('.rate-type-label').textContent.trim(); 
+                const price = activeRow.querySelector('.rate-price').textContent.trim();
+
+                document.getElementById('summary-room').textContent = roomName;
+                document.getElementById('summary-rate').textContent = rateName;
+                
+                const summaryPriceEl = document.getElementById('summary-price');
+                summaryPriceEl.textContent = price;
+                summaryPriceEl.classList.remove('price-loading'); 
+
+                // Visual flash effect on price change
+                summaryPriceEl.style.color = 'var(--pi-purple)';
+                setTimeout(() => { summaryPriceEl.style.color = 'var(--text-main)'; }, 300);
+            }
+
+            // 5. Setup Click Event Listeners
+            const rateRows = document.querySelectorAll('.rate-row');
+            const roomCards = document.querySelectorAll('.room-card');
+
+            rateRows.forEach(row => {
+                row.addEventListener('click', function() {
+                    // Clear old selections
+                    rateRows.forEach(r => r.classList.remove('selected'));
+                    roomCards.forEach(c => c.classList.remove('selected'));
+                    
+                    this.classList.add('selected');
+                    this.closest('.room-card').classList.add('selected');
+
+                    // Update the sticky sidebar
+                    updateSummaryPanel();
+                });
+            });
+
+            // 6. Execute the fetch on page load
+            fetchPricingData(hotelId).then(data => {
+                injectPricing(data);
+            });
+
+        });
+    </script>
+</body>
+</html>

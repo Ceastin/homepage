@@ -1,0 +1,6 @@
+{
+  "name": "Premier Inn",
+  "description": "A highly interactive, beautifully responsive replica of the Premier Inn hotel booking portal with dynamic hotel search, filters, pricing guides, and details.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,902 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premier Inn Birmingham Hotels</title>
+    <style>
+        /* Modern CSS Reset & Variables */
+        :root {
+            --pi-purple: #4B0053;
+            --pi-purple-hover: #63006E;
+            --pi-plus-purple: #5A1281;
+            --bg-body: #f5f5f5;
+            --bg-card: #ffffff;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --border-color: #dcdcdc;
+            --border-light: #eeeeee;
+            --ta-green: #00aa6c;
+            --font-stack: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: var(--font-stack);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        /* Header Navigation */
+        header {
+            background-color: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 40px;
+            height: 72px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        }
+
+        .header-left, .header-right {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--pi-purple);
+            letter-spacing: -0.5px;
+            cursor: pointer;
+        }
+
+        .nav-link {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-main);
+            height: 72px;
+            display: flex;
+            align-items: center;
+            border-bottom: 3px solid transparent;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--pi-purple);
+            border-bottom: 3px solid var(--pi-purple);
+        }
+
+        /* Container Layout */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 20px;
+        }
+
+        /* Breadcrumbs */
+        .breadcrumbs {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .breadcrumbs a:hover { text-decoration: underline; color: var(--pi-purple); }
+
+        /* Hero text */
+        .hero {
+            background: var(--bg-card);
+            padding: 32px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            margin-bottom: 24px;
+            border: 1px solid var(--border-light);
+        }
+
+        .hero h1 {
+            font-size: 28px;
+            color: var(--pi-purple);
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 15px;
+            max-width: 900px;
+            line-height: 1.6;
+        }
+
+        /* Upgraded Front Panel (Search Widget) */
+        .search-panel {
+            display: flex;
+            gap: 2px;
+            background: var(--border-color);
+            padding: 4px;
+            border-radius: 8px;
+            margin-top: 24px;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .search-field {
+            flex: 1;
+            background: var(--bg-card);
+            padding: 10px 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 60px;
+        }
+
+        .search-field:first-child { border-radius: 4px 0 0 4px; flex: 1.5; }
+        .search-field label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+        
+        .search-field input {
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-main);
+            outline: none;
+            width: 100%;
+            background: transparent;
+        }
+
+        .btn-search-large {
+            background-color: var(--pi-purple);
+            color: white;
+            border: none;
+            height: 60px;
+            padding: 0 40px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-search-large:hover { background-color: var(--pi-purple-hover); }
+
+        /* Main Content Layout (Full Width) */
+        .layout-full {
+            width: 100%;
+        }
+
+        /* Results Header */
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .results-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .view-toggle {
+            display: flex;
+            border: 1px solid var(--pi-purple);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .view-toggle button {
+            padding: 8px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            background: var(--bg-card);
+            color: var(--pi-purple);
+            cursor: pointer;
+        }
+
+        .view-toggle button.active {
+            background: var(--pi-purple);
+            color: white;
+        }
+
+        /* Hotel Cards Grid - Now wider columns */
+        .hotel-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .hotel-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer; /* Makes it clear the whole card is clickable */
+        }
+
+        .hotel-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .hotel-img {
+            height: 190px;
+            width: 100%;
+            background-color: #ddd;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hotel-content {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .hotel-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--pi-purple);
+            line-height: 1.3;
+            margin-bottom: 6px;
+        }
+
+        .hotel-distance {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        /* Amenities Widgets row */
+        .amenities-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            min-height: 24px;
+            align-items: center;
+        }
+
+        .premier-plus {
+            display: inline-block;
+            background: var(--pi-plus-purple);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .amenity-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0f0f0;
+            border-radius: 4px;
+            color: var(--pi-purple);
+            font-size: 12px;
+            font-weight: bold;
+            border: 1px solid #e0e0e0;
+        }
+
+        .reviews {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            margin-top: auto;
+        }
+
+        .ta-bubbles {
+            display: flex;
+            gap: 2px;
+        }
+
+        .ta-bubbles svg {
+            width: 16px;
+            height: 16px;
+            fill: var(--ta-green);
+        }
+
+        .btn-outline {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            border: 2px solid var(--pi-purple);
+            color: var(--pi-purple);
+            font-size: 15px;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-outline:hover {
+            background: var(--pi-purple);
+            color: white;
+        }
+
+        .show-more {
+            text-align: center;
+            margin-top: 32px;
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 12px 32px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .btn-secondary:hover { background: var(--bg-body); }
+
+        /* Information Sections */
+        .info-section {
+            background: var(--bg-card);
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+            padding: 40px;
+            margin-top: 40px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            font-size: 26px;
+            color: var(--pi-purple);
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .section-desc {
+            color: var(--text-muted);
+            font-size: 15px;
+            margin-bottom: 32px;
+            max-width: 800px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px 40px;
+        }
+
+        .feature-item svg {
+            width: 28px;
+            height: 28px;
+            fill: var(--pi-purple);
+            margin-bottom: 12px;
+        }
+
+        .feature-item h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .feature-item p {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Image Cards (Breaks & Explore) */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .img-card {
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .img-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .img-card .bg-img {
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .img-card p {
+            padding: 16px;
+            font-weight: 600;
+            font-size: 15px;
+            text-align: center;
+        }
+
+        /* FAQs */
+        .faq-nav {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+
+        .faq-tab {
+            padding: 12px 0;
+            margin-right: 48px;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+
+        .faq-tab.active {
+            color: var(--pi-purple);
+            border-bottom: 3px solid var(--pi-purple);
+        }
+
+        .faq-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            column-gap: 60px;
+        }
+
+        .faq-item {
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            color: var(--text-main);
+        }
+        .faq-item:hover { color: var(--pi-purple); }
+
+        /* Footer */
+        footer { margin-top: 60px; padding-bottom: 40px; }
+        .footer-top-nav {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            padding: 32px 0;
+            border-top: 1px solid var(--border-color);
+        }
+        .footer-top-nav a { font-weight: 600; font-size: 15px; }
+
+        .footer-desc {
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-muted);
+            max-width: 900px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+
+        .footer-columns {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+        .footer-columns h4 { font-size: 15px; margin-bottom: 16px; color: var(--text-main); }
+        .footer-columns ul li { margin-bottom: 12px; }
+        .footer-columns ul li a { font-size: 14px; color: var(--text-muted); }
+        .footer-columns ul li a:hover { color: var(--pi-purple); text-decoration: underline; }
+
+        .footer-bottom {
+            border-top: 1px solid var(--border-color);
+            padding-top: 24px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px 24px;
+        }
+        .footer-bottom a, .footer-bottom span { font-size: 13px; color: var(--text-muted); }
+        .footer-bottom a:hover { color: var(--pi-purple); text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-left">
+            <div class="logo">Premier Inn</div>
+            <a href="#" class="nav-link">Discover Premier Inn</a>
+            <a href="#" class="nav-link">Business</a>
+        </div>
+        <div class="header-right">
+            <a href="#" class="nav-link">Manage booking</a>
+            <a href="#" class="nav-link">Log in</a>
+            <a href="#" class="nav-link">Sign up</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="breadcrumbs">
+            <a href="#">Home</a> › 
+            <a href="#">Hotel Directory</a> › 
+            <a href="#">England</a> › 
+            <a href="#">West Midlands</a> › 
+            <span style="color: var(--text-main); font-weight: 500;">Birmingham</span>
+        </div>
+
+        <div class="hero">
+            <h1>Premier Inn Birmingham</h1>
+            <p>Birmingham is a bustling city in the heart of the midlands. Formerly one of the UK's major industrial centres, Birmingham is known for its canals, great venues and for being the home of the Bullring & Grand Central shopping centre and Aston Villa FC. Our hotels are close to all the city's major attractions, Birmingham Airport and the Queen Elizabeth Hospital.</p>
+            
+            <div class="search-panel">
+                <div class="search-field">
+                    <label>Place, Postcode or Hotel</label>
+                    <input type="text" value="Birmingham City Centre">
+                </div>
+                <div class="search-field" style="flex: 1;">
+                    <label>Check In - Check Out</label>
+                    <input type="text" value="Today - Tomorrow">
+                </div>
+                <div class="search-field" style="flex: 1;">
+                    <label>Rooms & Guests</label>
+                    <input type="text" value="1 adult, 1 room">
+                </div>
+                <button class="btn-search-large">Search</button>
+            </div>
+        </div>
+
+        <div class="layout-full">
+            
+            <main>
+                <div class="results-header">
+                    <h2>14 Hotels found</h2>
+                    <div class="view-toggle">
+                        <button>Map</button>
+                        <button class="active">Grid</button>
+                    </div>
+                </div>
+
+                <div class="hotel-grid">
+                    
+    <svg style="display:none;">
+        <defs>
+            <g id="bubble-full"><circle cx="8" cy="8" r="8"/></g>
+            <g id="bubble-empty"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="2"/></g>
+        </defs>
+    </svg>
+
+    <div class="hotel-card" onclick="window.location.href='hotel-details.html?hotelId=Birmingham-City-Centre-_Exchange-Square,-hotel'">
+        <div class="hotel-img" style="background-image: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80');"></div>
+        <div class="hotel-content">
+            <h3 class="hotel-title">Birmingham City Centre (Exchange Square) hotel</h3>
+            <p class="hotel-distance">1.24 miles from your search</p>
+            <div class="amenities-row">
+                <span class="premier-plus">Premier Plus</span>
+            </div>
+            <div class="reviews">
+                <div class="ta-bubbles">
+                    <svg><use href="#bubble-full"/></svg><svg><use href="#bubble-full"/></svg><svg><use href="#bubble-full"/></svg><svg><use href="#bubble-full"/></svg><svg><use href="#bubble-empty"/></svg>
+                </div>
+                <span>370 reviews</span>
+            </div>
+            <button class="btn-outline">View hotel</button>
+        </div>
+    </div>
+
+    <div class="hotel-card" onclick="window.location.href='hotel-details.html?hotelId=Birmingham-City-|-Aston'">
+        <div class="hotel-img" style="background-image: url('https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=600&q=80');"></div>
+        <div class="hotel-content">
+            <h3 class="hotel-title">Birmingham City - Aston</h3>
+            <p class="hotel-distance">1.29 miles from your search</p>
+            <div class="amenities-row"></div>
+            <div class="reviews">
+                <div class="ta-bubbles">
+                    <svg><use href="#bubble-full"/></svg><svg><use href="#bubble-full"/></svg><svg><use href="#bubble-full"/></svg><svg><use href="#bubble-full"/></svg><svg><use href="#bubble-empty"/></svg>
+                </div>
+                <span>1507 reviews</span>
+            </div>
+            <button class="btn-outline">View hotel</button>
+        </div>
+    </div>
+
+    <div class="hotel-card" onclick="window.location.href='hotel-details.html?hotelId=London-Leicester-Square-hotel'">
+        <div class="hotel-img" style="background-image: url('https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=600&q=80');"></div>
+        <div class="hotel-content">
+            <h3 class="hotel-title">London Leicester Square hotel</h3>
+            <p class="hotel-distance">1.52 miles from your search</p>
+            <div class="amenities-row">
+                <span class="premier-plus">Premier Plus</span>
+                <div class="amenity-icon" title="Parking">P</div>
+                <div class="amenity-icon" title="Free Wi-Fi">📶</div>
+            </div>
+            <div class="reviews">
+                <div class="ta-bubbles">
+                    <svg><use href="#bubble-full"/></svg><svg><use href="#bubble-full"/></svg><svg><use href="#bubble-full"/></svg><svg><use href="#bubble-full"/></svg><svg><use href="#bubble-full"/></svg>
+                </div>
+                <span>3031 reviews</span>
+            </div>
+            <button class="btn-outline">View hotel</button>
+        </div>
+    </div>
+
+    <div class="hotel-card" onclick="window.location.href='hotel-details.html?hotelId=London-Waterloo-_Westminster-Bridge,-hotel'">
+        <div class="hotel-img" style="background-image: url('https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=600&q=80');"></div>
+        <div class="hotel-content">
+            <h3 class="hotel-title">London Waterloo (Westminster Bridge) hotel</h3>
+            <p class="hotel-distance">1.44 miles from your search</p>
+            <div class="amenities-row">
+                <span class="premier-plus">Premier Plus</span>
+                <div class="amenity-icon" title="Parking">P</div>
+            </div>
+            <div class="reviews">
+                <div class="ta-bubbles">
+                    <svg><use href="#bubble-full"/></svg><svg><use href="#bubble-full"/></svg><svg><use href="#bubble-full"/></svg><svg><use href="#bubble-full"/></svg><svg><use href="#bubble-empty"/></svg>
+                </div>
+                <span>3424 views</span>
+            </div>
+            <button class="btn-outline">View hotel</button>
+        </div>
+    </div>
+
+    <div class="hotel-card" onclick="window.location.href='hotel-details.html?hotelId=London-County-Hall-hotel'">
+        <div class="hotel-img" style="background-image: url('https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=600&q=80');"></div>
+        <div class="hotel-content">
+            <h3 class="hotel-title">London County Hall hotel</h3>
+            <p class="hotel-distance">2.18 miles from your search</p>
+            <div class="amenities-row"></div>
+            <div class="reviews">
+                <div class="ta-bubbles">
+                    <svg><use href="#bubble-full"/></svg><svg><use href="#bubble-full"/></svg><svg><use href="#bubble-full"/></svg><svg><use href="#bubble-full"/></svg><svg><use href="#bubble-empty"/></svg>
+                </div>
+                <span>1489 reviews</span>
+            </div>
+            <button class="btn-outline">View hotel</button>
+        </div>
+    </div>
+
+    <div class="hotel-card" onclick="window.location.href='hotel-details.html?hotelId=London-Blackfriars-_Fleet-Street,-hotel'">
+        <div class="hotel-img" style="background-image: url('https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=600&q=80');"></div>
+        <div class="hotel-content">
+            <h3 class="hotel-title">London Blackfriars (Fleet Street) hotel</h3>
+            <p class="hotel-distance">3.95 miles from your search</p>
+            <div class="amenities-row">
+                <span class="premier-plus">Premier Plus</span>
+                <div class="amenity-icon" title="Accessible">♿</div>
+            </div>
+            <div class="reviews">
+                <div class="ta-bubbles">
+                    <svg><use href="#bubble-full"/></svg><svg><use href="#bubble-full"/></svg><svg><use href="#bubble-full"/></svg><svg><use href="#bubble-full"/></svg><svg><use href="#bubble-empty"/></svg>
+                </div>
+                <span>955 reviews</span>
+            </div>
+            <button class="btn-outline">View hotel</button>
+        </div>
+    </div>
+</div>
+
+                <div class="show-more">
+                    <button class="btn-secondary">Show more</button>
+                </div>
+            </main>
+        </div>
+
+        <div class="info-section">
+            <h2 class="section-title">Why Premier Inn?</h2>
+            <p class="section-desc">Is it our comfy beds, our seriously tasty food, our great value hotels or our amazing teams that guests love so much? We reckon it's a bit of everything.</p>
+            
+            <div class="features-grid">
+                <div class="feature-item">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                    <h4>We're everywhere</h4>
+                    <p>We're in 800+ locations across the UK and Ireland</p>
+                </div>
+                <div class="feature-item">
+                    <svg viewBox="0 0 24 24"><path d="M20 9.55V3h-2v6.55C17.06 9.2 16.06 9 15 9H9c-1.06 0-2.06.2-2.99.55V3H4v6.55C2.84 10.3 2 11.54 2 13v7h2v-2h16v2h2v-7c0-1.46-.84-2.7-2-3.45zM14 11c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"/></svg>
+                    <h4>Super-comfy beds</h4>
+                    <p>Sleep on the bed of your dreams</p>
+                </div>
+                <div class="feature-item">
+                    <svg viewBox="0 0 24 24"><path d="M1 9l2 2c5-5 13-5 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+                    <h4>Free Wi-Fi</h4>
+                    <p>Wi-Fi is totally free during your stay</p>
+                </div>
+                <div class="feature-item">
+                    <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    <h4>Family friendly</h4>
+                    <p>Kids stay and eat for free*, plus spacious family rooms</p>
+                </div>
+                <div class="feature-item">
+                    <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+                    <h4>Flexible rates</h4>
+                    <p>Choice of booking and payment options</p>
+                </div>
+                <div class="feature-item">
+                    <svg viewBox="0 0 24 24"><path d="M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.46L23 5.05h-5V1h-1.97v4.05h-4.97l1.65 16.48c.1.82.79 1.46 1.63 1.46h3.72zm-12.02-3c.51 0 .99-.2 1.34-.57L13.4 12c-1.45-1.45-3.41-2.24-5.46-2.24S3.93 10.55 2.48 12l6.02 7.42c.35.37.83.57 1.34.57z"/></svg>
+                    <h4>Unlimited breakfast</h4>
+                    <p>Enjoy our famous Premier Inn cooked or continental breakfast</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2 class="section-title">Breaks in the UK</h2>
+            <div class="card-grid">
+                <div class="img-card">
+                    <div class="bg-img" style="background-image: url('https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=400&q=80');"></div>
+                    <p>Family holidays</p>
+                </div>
+                <div class="img-card">
+                    <div class="bg-img" style="background-image: url('https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&fit=crop&w=400&q=80');"></div>
+                    <p>City breaks</p>
+                </div>
+                <div class="img-card">
+                    <div class="bg-img" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=400&q=80');"></div>
+                    <p>Summer breaks</p>
+                </div>
+                <div class="img-card">
+                    <div class="bg-img" style="background-image: url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=400&q=80');"></div>
+                    <p>Weekend breaks</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2 class="section-title">FAQs</h2>
+            <div class="faq-nav">
+                <div class="faq-tab active">About Birmingham</div>
+                <div class="faq-tab">Visiting Birmingham</div>
+                <div class="faq-tab">About Premier Inn</div>
+            </div>
+            <div class="faq-grid">
+                <div class="faq-item">What's the most famous thing about Birmingham? <span>⌄</span></div>
+                <div class="faq-item">How many airports are in Birmingham? <span>⌄</span></div>
+                <div class="faq-item">Is Birmingham worth visiting? <span>⌄</span></div>
+                <div class="faq-item">What places are like Birmingham? <span>⌄</span></div>
+                <div class="faq-item">Is Birmingham family friendly? <span>⌄</span></div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2 class="section-title">Explore...</h2>
+            <div class="card-grid">
+                <div class="img-card">
+                    <div class="bg-img" style="background-image: url('https://images.unsplash.com/photo-1584646098378-0874589d76b1?auto=format&fit=crop&w=400&q=80');"></div>
+                    <p>Hotels in Coventry</p>
+                </div>
+                <div class="img-card">
+                    <div class="bg-img" style="background-image: url('https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&w=400&q=80');"></div>
+                    <p>Hotels in Solihull</p>
+                </div>
+                <div class="img-card">
+                    <div class="bg-img" style="background-image: url('https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&fit=crop&w=400&q=80');"></div>
+                    <p>Hotels near Villa Park</p>
+                </div>
+                <div class="img-card">
+                    <div class="bg-img" style="background-image: url('https://images.unsplash.com/photo-1588629737130-15cb32e65842?auto=format&fit=crop&w=400&q=80');"></div>
+                    <p>Hotels near The NEC</p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="footer-top-nav">
+                <a href="#">About us</a>
+                <a href="#">City breaks</a>
+                <a href="#">Summer breaks</a>
+                <a href="#">Winter breaks</a>
+                <a href="#">Business</a>
+            </div>
+
+            <p class="footer-desc">
+                Is it our comfy beds, our seriously tasty food, our great value hotels or our amazing teams that guests love so much? We reckon it's a bit of everything. Take a look around to find out why we're a much-loved, award-winning hotel chain, and rest easy knowing our range of rates give you both choice and flexibility.
+            </p>
+
+            <div class="footer-columns">
+                <div>
+                    <h4>Get in touch</h4>
+                    <ul>
+                        <li><a href="#">Contact us</a></li>
+                        <li><a href="#">FAQs</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Terms and conditions</a></li>
+                        <li><a href="#">Terms of use</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Locations</h4>
+                    <ul>
+                        <li><a href="#">Hotel directory</a></li>
+                        <li><a href="#">New hotels</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Our hotels</h4>
+                    <ul>
+                        <li><a href="#">Our rooms</a></li>
+                        <li><a href="#">Family friendly</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Find out more</h4>
+                    <ul>
+                        <li><a href="#">About us</a></li>
+                        <li><a href="#">News</a></li>
+                        <li><a href="#">Offers</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Everything else</h4>
+                    <ul>
+                        <li><a href="#">Our rates</a></li>
+                        <li><a href="#">Offers</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <a href="#">Group bookings</a>
+                <a href="#">Affiliates</a>
+                <a href="#">International development</a>
+                <a href="#">Careers</a>
+                <span>© 2026 Premier Inn</span>
+                <a href="#">Privacy policy</a>
+                <a href="#">Local guides</a>
+                <a href="#">Sleep</a>
+                <a href="#">Cookies notice</a>
+                <a href="#">Short breaks</a>
+                <a href="#">Food & drink</a>
+                <a href="#">Good Night Guarantee</a>
+                <a href="#">Hotels in Germany</a>
+                <a href="#">hub by Premier Inn</a>
+                <a href="#">Modern Slavery Act statement</a>
+                <a href="#">Dubai and beyond</a>
+                <a href="#">ZIP by Premier Inn</a>
+                <a href="#">GOSH Charity</a>
+                <a href="#">Force for Good</a>
+                <a href="#">Disabled access</a>
+                <a href="#">Buy our bed</a>
+                <a href="#">Mobile apps</a>
+                <a href="#">We value difference</a>
+                <a href="#">Sitemap</a>
+            </div>
+        </footer>
+    </div>
+
+</body>
+</html>
+
