@@ -63,7 +63,7 @@ const executeSearch = (e: React.FormEvent) => {
 
   const destination = searchState.destination.trim().toLowerCase();
 
-  if (destination === 'london') {
+  if (destination?.toLowerCase() === 'birmingham') {
     window.location.href = 'https://premiereclass-3ktb.vercel.app/';
     return;
   }
