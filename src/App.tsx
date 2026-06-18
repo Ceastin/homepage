@@ -10,8 +10,8 @@ import { SearchState } from './types';
 export default function App() {
   const [searchState, setSearchState] = useState<SearchState>({
     destination: '',
-    checkInDate: '2026-06-18',
-    checkOutDate: '2026-06-18',
+    checkInDate: '2026-06-21',
+    checkOutDate: '2026-06-22',
     adults: 1,
     rooms: 1,
   });
